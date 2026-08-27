@@ -11,7 +11,10 @@
         <inbound-common :inbound="inbound"></inbound-common>
       </tbody>
     </table>
-    <vless-clients :clients="inbound.settings.clients" :proxy="inbound" mode="inbound"></vless-clients>
+    <vless-clients :clients="clients" :proxy="inbound" mode="inbound"></vless-clients>
+    <p v-if="clientConflict" class="native-config-warning">
+      Cannot edit VLESS clients: both native users and legacy clients are present. Resolve the conflict in the raw configuration first.
+    </p>
   </div>
 </template>
 <script lang="ts">
@@ -19,8 +22,8 @@
   import VlessClients from '@clients/VlessClients.vue';
   import InboundCommon from './InboundCommon.vue';
   import { XrayProtocol } from '@/modules/CommonObjects';
-  import { XrayInboundObject } from '@/modules/InboundObjects';
-  import { XrayVlessInboundObject } from '@/modules/InboundObjects';
+  import { XrayInboundObject, XrayVlessInboundObject } from '@/modules/InboundObjects';
+  import { NativeVlessInboundConflictError, projectVlessInboundClients } from '@/modules/NativeVlessInbound';
 
   export default defineComponent({
     name: 'VmessInbound',
@@ -33,8 +36,18 @@
     },
     setup(props) {
       const inbound = ref<XrayInboundObject<XrayVlessInboundObject>>(props.inbound ?? new XrayInboundObject<XrayVlessInboundObject>(XrayProtocol.VLESS, new XrayVlessInboundObject()));
+      const clientConflict = ref(false);
+      let clients = [] as any[];
+      try {
+        clients = projectVlessInboundClients((inbound.value.settings ?? {}) as any);
+      } catch (error) {
+        if (!(error instanceof NativeVlessInboundConflictError)) throw error;
+        clientConflict.value = true;
+      }
       return {
-        inbound
+        inbound,
+        clients,
+        clientConflict
       };
     }
   });

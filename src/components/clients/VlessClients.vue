@@ -49,6 +49,7 @@
 <script lang="ts">
   import engine from '@/modules/Engine';
   import { XrayVlessClientObject } from '@/modules/ClientsObjects';
+  import { mergeVlessInboundClient } from '@/modules/NativeVlessInbound';
   import { XrayOptions } from '@/modules/Options';
   import { defineComponent, ref } from 'vue';
   import modal from '@main/Modal.vue';
@@ -71,6 +72,7 @@
 
     setup(props) {
       const editingIndex = ref<number | null>(null);
+      const editingClient = ref<XrayVlessClientObject | null>(null);
       const clients = ref<XrayVlessClientObject[]>(props.clients ?? []);
       const newClient = ref<XrayVlessClientObject>(new XrayVlessClientObject());
       const mode = ref(props.mode);
@@ -113,7 +115,13 @@
           client.encryption = 'none';
         }
 
-        clients.value.push(client);
+        if (editingIndex.value !== null && editingClient.value) {
+          Object.assign(editingClient.value, mergeVlessInboundClient(editingClient.value, client));
+          editingIndex.value = null;
+          editingClient.value = null;
+        } else {
+          clients.value.push(client);
+        }
         resetNewForm();
       };
 
@@ -122,7 +130,7 @@
         newClient.value.email = client.email;
         newClient.value.flow = client.flow || XrayOptions.clientFlowOptions[0];
         editingIndex.value = index;
-        clients.value.splice(clients.value.indexOf(client), 1);
+        editingClient.value = client;
       };
       return {
         flows,
