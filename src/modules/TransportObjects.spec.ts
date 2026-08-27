@@ -476,6 +476,15 @@ describe('TransportObjects', () => {
       expect(XrayFinalMaskObject.createSettings('header-dtls')).toBeUndefined();
     });
 
+    it('preserves unknown FinalMask types and opaque payloads', () => {
+      const raw = { type: 'future-mask-v99', settings: { opaque: true }, extra: ['keep'] };
+      const mask = new XrayFinalMaskObject();
+      Object.assign(mask, raw);
+
+      expect(XrayFinalMaskObject.deserializeSettings(raw.type, raw.settings)).toEqual(raw.settings);
+      expect(JSON.parse(JSON.stringify(mask.normalize()))).toEqual(raw);
+    });
+
     it('produces correct JSON structure for Xray-core', () => {
       const mask = new XrayFinalMaskObject();
       const salamander = new XraySalamanderObject();

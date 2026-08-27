@@ -453,15 +453,18 @@ export class XrayFinalMaskObject {
   ]);
 
   public type = 'salamander';
-  public settings?: FinalMaskSettingsType;
+  public settings?: any;
 
   normalize = (): this | undefined => {
     if (XrayFinalMaskObject.noSettingsTypes.has(this.type)) {
       this.settings = undefined;
       return this;
     }
-    if (this.settings && typeof this.settings.normalize === 'function') {
-      this.settings = this.settings.normalize();
+    if (!XrayFinalMaskObject.udpMaskTypes.includes(this.type) && !XrayFinalMaskObject.tcpMaskTypes.includes(this.type)) {
+      return this;
+    }
+    if (this.settings && typeof (this.settings as any).normalize === 'function') {
+      this.settings = (this.settings as any).normalize();
     }
     if (!this.settings) return undefined;
     return this;
@@ -518,7 +521,7 @@ export class XrayFinalMaskObject {
       case 'xicmp':
         return plainToInstance(XrayXicmpObject, data);
       default:
-        return undefined;
+        return data as any;
     }
   }
 }
