@@ -75,6 +75,7 @@
 <script lang="ts">
   import { computed, defineComponent, inject, Ref, ref, watch } from 'vue';
   import engine, { EngineResponseConfig, SubmitActions } from '@/modules/Engine';
+  import { validateConfigurationForApply } from '@/modules/ConfigCompatibility';
 
   import Modal from '@main/Modal.vue';
 
@@ -152,6 +153,17 @@
       };
 
       const apply_settings = async () => {
+        const compatibility = validateConfigurationForApply(config.value);
+        if (!compatibility.compatible) {
+          const paths = compatibility.issues.join('\n');
+          window.alert(
+            '应用已阻止：当前配置包含 UI 尚未支持的原生字段。\n\n' +
+              '为避免重写或删除出站、入站、路由配置，本次不会写入配置，也不会重启 Xray。\n\n' +
+              paths
+          );
+          return;
+        }
+
         if (logsManager.value?.follow) {
           logsManager.value.follow = false;
           window.showLoading(6000);
