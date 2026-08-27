@@ -228,6 +228,81 @@ initial_response() {
     fi
 }
 
+apply_native_config() {
+    update_loading_progress "Applying native-preserving server configuration..." 0
+
+    load_xrayui_config
+    local temp_config backup_config incoming_config expected_hash installed_hash xray_version
+    temp_config=$(mktemp "${XRAY_CONFIG_FILE}.native.XXXXXX") || {
+        log_error "native apply: failed to create same-directory temporary file"
+        exit 1
+    }
+    backup_config="${XRAY_CONFIG_FILE}.native-backup.$$"
+    incoming_config=$(reconstruct_payload) || incoming_config=""
+
+    if [ -z "$incoming_config" ]; then
+        log_error "native apply: incoming configuration is empty"
+        rm -f "$temp_config"
+        exit 1
+    fi
+    if ! printf '%s' "$incoming_config" >"$temp_config" || ! jq empty "$temp_config" >/dev/null 2>&1; then
+        log_error "native apply: invalid JSON"
+        rm -f "$temp_config"
+        exit 1
+    fi
+
+    xray_version=$(xray version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -n 1)
+    if [ "$xray_version" != "26.7.28" ]; then
+        log_error "native apply: required Xray version 26.7.28, found ${xray_version:-unknown}"
+        rm -f "$temp_config"
+        exit 1
+    fi
+    if ! xray -c "$temp_config" -test >/dev/null 2>&1; then
+        log_error "native apply: Xray 26.7.28 configuration test failed"
+        rm -f "$temp_config"
+        exit 1
+    fi
+
+    expected_hash=$(sha256sum "$temp_config" | awk '{print $1}') || {
+        rm -f "$temp_config"
+        exit 1
+    }
+    if [ -f "$XRAY_CONFIG_FILE" ]; then
+        cp -f "$XRAY_CONFIG_FILE" "$backup_config" || {
+            log_error "native apply: backup failed"
+            rm -f "$temp_config"
+            exit 1
+        }
+    fi
+
+    if ! mv -f "$temp_config" "$XRAY_CONFIG_FILE"; then
+        log_error "native apply: atomic install failed"
+        [ -f "$backup_config" ] && mv -f "$backup_config" "$XRAY_CONFIG_FILE"
+        rm -f "$temp_config"
+        exit 1
+    fi
+    installed_hash=$(sha256sum "$XRAY_CONFIG_FILE" | awk '{print $1}')
+    if [ "$installed_hash" != "$expected_hash" ]; then
+        log_error "native apply: readback hash mismatch"
+        if [ -f "$backup_config" ]; then mv -f "$backup_config" "$XRAY_CONFIG_FILE"; else rm -f "$XRAY_CONFIG_FILE"; fi
+        exit 1
+    fi
+
+    if [ -f "$XRAY_PIDFILE" ]; then
+        update_loading_progress "Restarting Xray service..." 35
+        if ! restart; then
+            log_error "native apply: restart failed, restoring backup"
+            if [ -f "$backup_config" ]; then
+                mv -f "$backup_config" "$XRAY_CONFIG_FILE" || exit 1
+                restart || true
+            fi
+            exit 1
+        fi
+    fi
+    rm -f "$backup_config"
+    log_ok "Native-preserving configuration applied successfully."
+}
+
 apply_config() {
 
     update_loading_progress "Applying new server configuration..." 0

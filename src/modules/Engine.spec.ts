@@ -43,6 +43,13 @@ describe('XrayConfig', () => {
     });
   });
 
+  it('stores the raw baseline for native-preserving apply', () => {
+    expect(engine.nativeBaseline).toEqual(mainConfig);
+    const native = engine.prepareNativeServerConfig(xrayConfig!);
+    expect(native.inbounds).toHaveLength(mainConfig.inbounds.length);
+    expect(native.outbounds).toHaveLength(mainConfig.outbounds.length);
+  });
+
   describe('submit()', () => {
     it('should submit the Xray configuration', async () => {
       const submitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit');

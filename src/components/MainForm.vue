@@ -75,7 +75,6 @@
 <script lang="ts">
   import { computed, defineComponent, inject, Ref, ref, watch } from 'vue';
   import engine, { EngineResponseConfig, SubmitActions } from '@/modules/Engine';
-  import { validateConfigurationForApply } from '@/modules/ConfigCompatibility';
 
   import Modal from '@main/Modal.vue';
 
@@ -153,14 +152,11 @@
       };
 
       const apply_settings = async () => {
-        const compatibility = validateConfigurationForApply(config.value);
-        if (!compatibility.compatible) {
-          const paths = compatibility.issues.join('\n');
-          window.alert(
-            '应用已阻止：当前配置包含 UI 尚未支持的原生字段。\n\n' +
-              '为避免重写或删除出站、入站、路由配置，本次不会写入配置，也不会重启 Xray。\n\n' +
-              paths
-          );
+        let cfg: Record<string, any>;
+        try {
+          cfg = engine.prepareNativeServerConfig(config.value);
+        } catch (error: any) {
+          window.alert('应用已阻止：无法证明当前配置可以无损回写。\n\n本次不会创建 payload、写入配置或重启 Xray。');
           return;
         }
 
@@ -170,8 +166,7 @@
         }
 
         await engine.executeWithLoadingProgress(async () => {
-          const cfg = engine.prepareServerConfig(config.value);
-          await engine.submit(SubmitActions.configurationApply, cfg);
+          await engine.submit(SubmitActions.nativeConfigurationApply, cfg);
           await engine.loadXrayConfig();
         });
       };

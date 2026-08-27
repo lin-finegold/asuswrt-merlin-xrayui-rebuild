@@ -258,6 +258,7 @@ export class GeodatTagRequest {
 export enum SubmitActions {
   configurationSetMode = 'xrayui_configuration_mode',
   configurationApply = 'xrayui_configuration_apply',
+  nativeConfigurationApply = 'xrayui_configuration_native_apply',
   configurationStageChunk = 'xrayui_configuration_stagechunk',
   clientsOnline = 'xrayui_connectedclients',
   refreshConfig = 'xrayui_refreshconfig',
@@ -298,8 +299,34 @@ export enum SubmitActions {
   b4sniStop = 'xrayui_b4sni_stop'
 }
 
+function assertNativeShapePreserved(baseline: any, candidate: any, path = '$'): void {
+  if (baseline === null || typeof baseline !== 'object') return;
+  if (candidate === null || typeof candidate !== 'object') throw new Error(`Native Apply would replace ${path}`);
+  if (Array.isArray(baseline)) {
+    if (!Array.isArray(candidate) || candidate.length < baseline.length) throw new Error(`Native Apply would truncate ${path}`);
+    baseline.forEach((value, index) => assertNativeShapePreserved(value, candidate[index], `${path}[${index}]`));
+    return;
+  }
+  Object.keys(baseline).forEach((key) => {
+    if (!Object.prototype.hasOwnProperty.call(candidate, key)) throw new Error(`Native Apply would drop ${path}.${key}`);
+    assertNativeShapePreserved(baseline[key], candidate[key], `${path}.${key}`);
+  });
+}
+
+function assertOrderedIdentity(baseline: any[], candidate: any[], path: string): void {
+  if (!Array.isArray(baseline) || !Array.isArray(candidate) || baseline.length !== candidate.length) {
+    throw new Error(`Native Apply changed ${path} length/order`);
+  }
+  baseline.forEach((value, index) => {
+    const identity = value?.tag ?? value?.idx ?? value?.name;
+    const candidateIdentity = candidate[index]?.tag ?? candidate[index]?.idx ?? candidate[index]?.name;
+    if (identity !== undefined && identity !== candidateIdentity) throw new Error(`Native Apply changed ${path} order`);
+  });
+}
+
 export class Engine {
   public xrayConfig: XrayObject = xrayConfig;
+  public nativeBaseline: Record<string, any> | undefined;
   public mode = 'server';
   private readonly zero_uuid = '10000000-1000-4000-8000-100000000000';
   private subscriptionsNotFound = false;
@@ -519,6 +546,21 @@ export class Engine {
     return base64String;
   };
 
+  prepareNativeServerConfig(config: XrayObject): Record<string, any> {
+    const plain = JSON.parse(JSON.stringify(config));
+    if (!this.nativeBaseline) throw new Error('Native Apply requires an original baseline configuration');
+    if (!plain || typeof plain !== 'object' || !Array.isArray(plain.inbounds) || !Array.isArray(plain.outbounds)) {
+      throw new Error('Native Apply requires a complete native configuration document');
+    }
+    assertNativeShapePreserved(this.nativeBaseline, plain);
+    assertOrderedIdentity(this.nativeBaseline.inbounds, plain.inbounds, '$.inbounds');
+    assertOrderedIdentity(this.nativeBaseline.outbounds, plain.outbounds, '$.outbounds');
+    if (this.nativeBaseline.routing?.rules || plain.routing?.rules) {
+      assertOrderedIdentity(this.nativeBaseline.routing?.rules ?? [], plain.routing?.rules ?? [], '$.routing.rules');
+    }
+    return plain;
+  }
+
   prepareServerConfig(config: XrayObject): XrayObject {
     config = this.cloneServerConfig(config);
     DnsLeakProtection.repair(config);
@@ -726,6 +768,7 @@ export class Engine {
             Expires: '0'
           }
         });
+        this.nativeBaseline = JSON.parse(JSON.stringify(response.data));
         config = plainToInstance(XrayObject, response.data);
       }
       this.xrayConfig = this.hydrateConfig(config);

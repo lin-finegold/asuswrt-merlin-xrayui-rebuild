@@ -222,6 +222,11 @@ service_event)
         ;;
     configuration)
         case "$3" in
+        native_apply)
+            apply_native_config
+            update_loading_progress "Native-preserving configuration applied successfully." 100
+            exit 0
+            ;;
         apply)
             apply_config
             update_loading_progress "Configuration applied successfully." 100
