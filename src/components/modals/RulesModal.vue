@@ -264,6 +264,7 @@
   import draggable from 'vuedraggable';
   import { useI18n } from 'vue-i18n';
   import { EngineGeoTags } from '@modules/Engine';
+  import { collectNativeRoutingTargets } from '@/modules/NativeReverseRouting';
 
   export default defineComponent({
     name: 'RulesModal',
@@ -362,7 +363,7 @@
       };
 
       const saveRule = () => {
-        const newRule = new XrayRoutingRuleObject();
+        const newRule = Object.assign(new XrayRoutingRuleObject(), currentRule.value);
         newRule.enabled = currentRule.value.enabled;
         newRule.idx = currentRule.value.idx;
         newRule.name = currentRule.value.name;
@@ -426,12 +427,14 @@
         const reverse_bridges = xrayConfig.reverse?.bridges?.map((o) => o.tag!).filter(Boolean) ?? [];
         const reverse_portals = xrayConfig.reverse?.portals?.map((o) => o.tag!).filter(Boolean) ?? [];
 
+        const nativeTargets = collectNativeRoutingTargets(xrayConfig as any);
         inbounds.value = [
           ...xrayConfig.inbounds
             .filter((o) => !o.isSystem())
             .map((o) => o.tag)
             .filter((tag): tag is string => tag !== undefined),
-          ...reverse_bridges
+          ...reverse_bridges,
+          ...nativeTargets.inbounds.filter((tag) => !tag.startsWith('sys:'))
         ];
 
         if (xrayConfig.dns?.tag?.length) {
@@ -443,8 +446,12 @@
             .filter((o) => !o.isSystem())
             .map((o) => o.tag)
             .filter((tag): tag is string => tag !== undefined),
-          ...reverse_portals
+          ...reverse_portals,
+          ...nativeTargets.outbounds.filter((tag) => !tag.startsWith('sys:'))
         ];
+
+        inbounds.value = [...new Set(inbounds.value)];
+        outbounds.value = [...new Set(outbounds.value)];
 
         balancerTags.value = (xrayConfig.routing?.balancers || [])
           .map((b) => b.tag)

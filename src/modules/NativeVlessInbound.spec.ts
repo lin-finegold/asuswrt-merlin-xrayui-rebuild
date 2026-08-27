@@ -3,7 +3,8 @@ import {
   getVlessInboundClientSource,
   projectVlessInboundClients,
   replaceVlessInboundClients,
-  mergeVlessInboundClient
+  mergeVlessInboundClient,
+  getVlessInboundUserNames
 } from './NativeVlessInbound';
 
 describe('Native VLESS inbound users adapter', () => {
@@ -31,6 +32,12 @@ describe('Native VLESS inbound users adapter', () => {
       unknown: { keep: true }
     });
   });
+  it('projects user names from native users even when class-transformer added empty clients', () => {
+    const settings = { users: [{ email: 'native-a' }, { email: 'native-b' }], clients: [] };
+
+    expect(getVlessInboundUserNames(settings)).toEqual(['native-a', 'native-b']);
+  });
+
   it('uses legacy clients when users is absent', () => {
     const settings = { clients: [{ id: 'client-1', email: 'legacy-client' }], unknown: { keep: true } };
 

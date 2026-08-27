@@ -12,6 +12,7 @@ import {
   XrayHysteriaClientObject
 } from './ClientsObjects';
 import { plainToInstance } from 'class-transformer';
+import { getVlessInboundUserNames } from './NativeVlessInbound';
 
 export class XrayInboundObject<TProxy extends IProtocolType> {
   public protocol!: string;
@@ -78,7 +79,7 @@ export class XrayVlessInboundObject implements IProtocolType {
   public decryption = 'none';
   public clients: XrayVlessClientObject[] = [];
   getUserNames = (): string[] => {
-    return this.clients.map((c) => c.email).filter((email): email is string => email !== undefined);
+    return getVlessInboundUserNames(this as any);
   };
   normalize = (): this | undefined => {
     this.clients = this.clients.map((c) => plainToInstance(XrayVlessClientObject, c).normalize());

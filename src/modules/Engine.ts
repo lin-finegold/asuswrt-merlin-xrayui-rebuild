@@ -107,8 +107,12 @@ const outboundSettingsMap: Record<string, new () => any> = {
 function deserializeProxy<T>(proxy: any, settingsMap: Record<string, new () => any>, ProxyClass: new () => T): T {
   const SettingsClass = settingsMap[proxy.protocol];
   if (SettingsClass) {
+    const rawSettings = proxy.settings;
     proxy = plainToInstance(ProxyClass, proxy);
     proxy.settings = plainToInstance(SettingsClass, proxy.settings) ?? new SettingsClass();
+    if (proxy.protocol === XrayProtocol.VLESS && !Object.prototype.hasOwnProperty.call(rawSettings ?? {}, 'vnext')) {
+      delete (proxy.settings as any).vnext;
+    }
   }
   return proxy;
 }

@@ -28,6 +28,12 @@ export function getVlessInboundClientSource(settings: NativeVlessInboundSettings
   return 'none';
 }
 
+export function getVlessInboundUserNames(settings: NativeVlessInboundSettings | undefined): string[] {
+  return projectVlessInboundClients(settings)
+    .map((client) => client.email)
+    .filter((email): email is string => typeof email === 'string' && email.length > 0);
+}
+
 export function projectVlessInboundClients(settings: NativeVlessInboundSettings | undefined): NativeVlessClient[] {
   const source = getVlessInboundClientSource(settings);
   if (source === 'conflict') throw new NativeVlessInboundConflictError();

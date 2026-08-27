@@ -3,7 +3,7 @@
     <table class="FormTable modal-form-table">
       <thead>
         <tr>
-          <td colspan="4">{{ $t('com.BalancerModal.modal_title2') }}</td>
+          <td colspan="5">{{ $t('com.BalancerModal.modal_title2') }}</td>
         </tr>
       </thead>
       <tbody v-if="balancers.length">
@@ -13,6 +13,7 @@
           </th>
           <td style="color: #ffcc00">{{ b.tag || 'unnamed' }}</td>
           <td>{{ b.strategy?.type || 'random' }}</td>
+          <td>{{ b.fallbackTag || $t('com.BalancerModal.none') }}</td>
           <td>
             <span class="row-buttons">
               <input class="button_gen button_gen_small" type="button" :value="$t('labels.edit')" @click.prevent="editBalancer(b)" />

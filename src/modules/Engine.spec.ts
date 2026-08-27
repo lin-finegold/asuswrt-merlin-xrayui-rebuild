@@ -50,6 +50,27 @@ describe('XrayConfig', () => {
     expect(native.outbounds).toHaveLength(mainConfig.outbounds.length);
   });
 
+  it('does not inject the legacy vnext default into a native flat VLESS outbound', () => {
+    const config = engine.hydrateConfig({
+      inbounds: [],
+      outbounds: [
+        {
+          protocol: XrayProtocol.VLESS,
+          tag: 'homexray',
+          settings: {
+            address: 'native.example',
+            port: 443,
+            id: 'redacted-id',
+            reverse: { tag: 'homexraylocal' }
+          }
+        }
+      ]
+    } as any);
+
+    expect((config.outbounds[0].settings as any).vnext).toBeUndefined();
+    expect((config.outbounds[0].settings as any).address).toBe('native.example');
+  });
+
   describe('submit()', () => {
     it('should submit the Xray configuration', async () => {
       const submitSpy = jest.spyOn(HTMLFormElement.prototype, 'submit');

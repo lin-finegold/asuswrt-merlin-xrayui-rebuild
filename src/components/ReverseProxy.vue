@@ -31,14 +31,28 @@
           <reverse-items-modal ref="portalModal" v-model:items="reverse.portals"></reverse-items-modal>
         </td>
       </tr>
+      <tr v-if="nativeReferences.length">
+        <th>Native Reverse references</th>
+        <td>
+          <div v-for="reference in nativeReferences" :key="reference.path" class="native-reverse-reference">
+            <code>{{ reference.source }}</code>
+            <span> tag={{ reference.tag }}</span>
+            <span v-if="reference.inboundTag"> inbound={{ reference.inboundTag }}</span>
+            <span v-if="reference.outboundTag"> outbound={{ reference.outboundTag }}</span>
+            <span v-if="reference.userIndex !== undefined"> user={{ reference.userIndex }}</span>
+            <span v-if="reference.domain"> domain={{ reference.domain }}</span>
+          </div>
+        </td>
+      </tr>
     </tbody>
   </table>
 </template>
 <script lang="ts">
-  import { defineComponent, inject, ref, Ref, watch } from 'vue';
+  import { computed, defineComponent, inject, ref, Ref, watch } from 'vue';
   import Hint from '@main/Hint.vue';
   import Modal from '@main/Modal.vue';
   import { XrayReverseObject, XrayReverseItemType } from '@/modules/CommonObjects';
+  import { collectNativeReverseReferences, NativeReverseReference } from '@/modules/NativeReverseRouting';
   import xrayConfig from '@/modules/XrayConfig';
   import ReverseItemsModal from '@modal/ReverseItemsModal.vue';
 
@@ -53,6 +67,7 @@
       const bridgeModal = ref();
       const portalModal = ref();
       const reverse = ref<XrayReverseObject>(xrayConfig.reverse || new XrayReverseObject());
+      const nativeReferences = computed<NativeReverseReference[]>(() => collectNativeReverseReferences(xrayConfig as any));
 
       const manage = (type: string) => {
         if (type === XrayReverseItemType.BRIDGE) {
@@ -73,7 +88,7 @@
         { immediate: true }
       );
 
-      return { bridgeModal, portalModal, reverse, XrayReverseItemType, manage };
+      return { bridgeModal, portalModal, reverse, nativeReferences, XrayReverseItemType, manage };
     }
   });
 </script>

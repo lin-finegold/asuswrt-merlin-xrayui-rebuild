@@ -1,5 +1,6 @@
 import {
   collectNativeReverseReferences,
+  collectNativeRoutingTargets,
   getNativeRoutingSnapshot,
   selectRoutingForApply
 } from './NativeReverseRouting';
@@ -75,5 +76,18 @@ describe('Native Reverse and routing preservation', () => {
       ['inbound.settings.users[].reverse.tag', '/inbounds/0/settings/users/0/reverse/tag'],
       ['outbound.settings.reverse.tag', '/outbounds/0/settings/reverse/tag']
     ]);
+  });
+
+  it('exposes native Reverse bridge, portal, and outbound targets to routing selectors', () => {
+    expect(
+      collectNativeRoutingTargets({
+        reverse: { bridges: [{ tag: 'bridge' }], portals: [{ tag: 'portal' }] },
+        inbounds: [{ tag: 'inbound' }],
+        outbounds: [{ tag: 'outbound', settings: { reverse: { tag: 'native-outbound-reverse' } } }]
+      })
+    ).toEqual({
+      inbounds: ['inbound', 'bridge'],
+      outbounds: ['outbound', 'portal', 'native-outbound-reverse']
+    });
   });
 });

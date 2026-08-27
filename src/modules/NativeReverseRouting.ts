@@ -71,6 +71,24 @@ export function collectNativeReverseReferences(config: NativeConfigDocument): Na
   return refs;
 }
 
+export function collectNativeRoutingTargets(config: NativeConfigDocument): { inbounds: string[]; outbounds: string[] } {
+  const inbounds = Array.isArray(config.inbounds)
+    ? config.inbounds.map((item) => item?.tag).filter((tag): tag is string => typeof tag === 'string' && tag.length > 0)
+    : [];
+  const outbounds = Array.isArray(config.outbounds)
+    ? config.outbounds.map((item) => item?.tag).filter((tag): tag is string => typeof tag === 'string' && tag.length > 0)
+    : [];
+
+  collectNativeReverseReferences(config).forEach((ref) => {
+    if (ref.source === 'reverse.bridges' && !inbounds.includes(ref.tag)) inbounds.push(ref.tag);
+    if ((ref.source === 'reverse.portals' || ref.source === 'outbound.settings.reverse.tag') && !outbounds.includes(ref.tag)) {
+      outbounds.push(ref.tag);
+    }
+  });
+
+  return { inbounds, outbounds };
+}
+
 export function getNativeRoutingSnapshot<T extends NativeConfigDocument>(routing: T): T {
   return clone(routing);
 }

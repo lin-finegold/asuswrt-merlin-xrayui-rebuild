@@ -66,14 +66,6 @@
         props.proxy ?? new XrayOutboundObject<XrayVlessOutboundObject>(XrayProtocol.VLESS, new XrayVlessOutboundObject())
       );
 
-      if (proxy.value.settings?.vnext.length == 0) {
-        proxy.value.settings.vnext.push({
-          address: '',
-          port: 443,
-          users: []
-        });
-      }
-
       const updateNativeField = (field: string, value: any) => {
         if (!proxy.value.settings || getVlessOutboundShape(proxy.value.settings as any) === 'conflict') return;
         proxy.value.settings = replaceVlessOutboundFields(proxy.value.settings as any, { [field]: value }) as XrayVlessOutboundObject;
@@ -90,18 +82,23 @@
       });
 
       const users = computed<XrayVlessClientObject[]>({
-        get: () => proxy.value.settings?.vnext?.[0]?.users ?? [],
+        get: () => {
+          const settings = proxy.value.settings as any;
+          return settings && getVlessOutboundShape(settings) === 'vnext' ? settings.vnext?.[0]?.users ?? [] : [];
+        },
         set: (val) => {
-          if (!proxy.value.settings) return;
-          proxy.value.settings.vnext[0].users = val;
+          const settings = proxy.value.settings as any;
+          if (!settings || getVlessOutboundShape(settings) !== 'vnext' || !settings.vnext?.[0]) return;
+          settings.vnext[0].users = val;
         }
       });
 
       watch(
         () => users.value.length,
         () => {
-          if (proxy.value.settings) {
-            proxy.value.settings.vnext[0].users = users.value;
+          const settings = proxy.value.settings as any;
+          if (settings && getVlessOutboundShape(settings) === 'vnext' && settings.vnext?.[0]) {
+            settings.vnext[0].users = users.value;
           }
         }
       );
