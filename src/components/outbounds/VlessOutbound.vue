@@ -15,7 +15,7 @@
             <hint v-html="$t('com.VlessOutbound.hint_address')"></hint>
           </th>
           <td>
-            <input type="text" class="input_20_table" v-model="proxy.settings.vnext[0].address" autocomplete="off" autocorrect="off" autocapitalize="off" />
+            <input type="text" class="input_20_table" v-model="address" autocomplete="off" autocorrect="off" autocapitalize="off" />
             <span class="hint-color"></span>
           </td>
         </tr>
@@ -29,7 +29,7 @@
               type="number"
               maxlength="5"
               class="input_6_table"
-              v-model="proxy.settings.vnext[0].port"
+              v-model="port"
               autocorrect="off"
               autocapitalize="off"
               onkeypress="return validator.isNumber(this,event);"
@@ -46,6 +46,7 @@
   import { XrayOutboundObject, XrayVlessOutboundObject } from '@/modules/OutboundObjects';
   import { XrayProtocol } from '@/modules/CommonObjects';
   import { XrayVlessClientObject } from '@/modules/ClientsObjects';
+  import { getVlessOutboundShape, projectVlessOutbound, replaceVlessOutboundFields } from '@/modules/NativeVlessOutbound';
   import OutboundCommon from './OutboundCommon.vue';
   import Clients from '@clients/VlessClients.vue';
   import Hint from '@main/Hint.vue';
@@ -72,6 +73,21 @@
           users: []
         });
       }
+
+      const updateNativeField = (field: string, value: any) => {
+        if (!proxy.value.settings || getVlessOutboundShape(proxy.value.settings as any) === 'conflict') return;
+        proxy.value.settings = replaceVlessOutboundFields(proxy.value.settings as any, { [field]: value }) as XrayVlessOutboundObject;
+        emit('update:proxy', proxy.value);
+      };
+
+      const address = computed<string>({
+        get: () => projectVlessOutbound((proxy.value.settings ?? {}) as any).address ?? '',
+        set: (value) => updateNativeField('address', value)
+      });
+      const port = computed<number | string>({
+        get: () => projectVlessOutbound((proxy.value.settings ?? {}) as any).port ?? 443,
+        set: (value) => updateNativeField('port', value)
+      });
 
       const users = computed<XrayVlessClientObject[]>({
         get: () => proxy.value.settings?.vnext?.[0]?.users ?? [],
@@ -109,6 +125,8 @@
 
       return {
         proxy,
+        address,
+        port,
         users,
         applyParsed
       };
