@@ -1,0 +1,2390 @@
+{
+  "log": {
+    "access": "/opt/share/xrayui/logs/xray_access.log",
+    "error": "/opt/share/xrayui/logs/xray_error.log",
+    "loglevel": "warning"
+  },
+  "dns": {
+    "tag": "dns-module",
+    "hosts": {
+      "dns.google": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "2001:4860:4860::8888",
+        "2001:4860:4860::8844"
+      ],
+      "dns.alidns.com": [
+        "223.5.5.5",
+        "223.6.6.6",
+        "2400:3200::1",
+        "2400:3200:baba::1"
+      ],
+      "one.one.one.one": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "1dot1dot1dot1.cloudflare-dns.com": [
+        "1.1.1.1",
+        "1.0.0.1",
+        "2606:4700:4700::1111",
+        "2606:4700:4700::1001"
+      ],
+      "cloudflare-dns.com": [
+        "104.16.249.249",
+        "104.16.248.249",
+        "2606:4700::6810:f8f9",
+        "2606:4700::6810:f9f9"
+      ],
+      "dns.cloudflare.com": [
+        "162.159.61.8",
+        "172.64.41.8",
+        "2a06:98c1:52::8",
+        "2803:f800:53::8"
+      ],
+      "dot.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "doh.pub": [
+        "1.12.12.12",
+        "120.53.53.53"
+      ],
+      "dns.quad9.net": [
+        "9.9.9.9",
+        "149.112.112.112",
+        "2620:fe::fe",
+        "2620:fe::9"
+      ],
+      "dns.yandex.net": [
+        "77.88.8.8",
+        "77.88.8.1",
+        "2a02:6b8::feed:0ff",
+        "2a02:6b8:0:1::feed:0ff"
+      ],
+      "dns.sb": [
+        "45.11.45.11",
+        "185.222.222.222",
+        "2a09::",
+        "2a11::"
+      ],
+      "dns.umbrella.com": [
+        "208.67.220.220",
+        "208.67.222.222",
+        "2620:119:35::35",
+        "2620:119:53::53"
+      ],
+      "dns.sse.cisco.com": [
+        "208.67.220.220",
+        "208.67.222.222",
+        "2620:119:35::35",
+        "2620:119:53::53"
+      ],
+      "engage.cloudflareclient.com": [
+        "162.159.192.1",
+        "2606:4700:d0::a29f:c001"
+      ],
+      "test1.tepc.cn": [
+        "10.166.12.2"
+      ]
+    },
+    "servers": [
+      {
+        "address": "https://cloudflare-dns.com/dns-query",
+        "domains": [
+          "domain:googleapis.cn",
+          "domain:gstatic.com"
+        ],
+        "skipFallback": true
+      },
+      {
+        "address": "https://dns.alidns.com/dns-query",
+        "domains": [
+          "domain:alidns.com",
+          "domain:doh.pub",
+          "domain:dot.pub",
+          "domain:360.cn",
+          "domain:onedns.net"
+        ],
+        "skipFallback": true,
+        "tag": "direct-dns-1"
+      },
+      {
+        "address": "https://dns.alidns.com/dns-query",
+        "domains": [
+          "geosite:private",
+          "geosite:cn"
+        ],
+        "skipFallback": true,
+        "tag": "direct-dns-2"
+      },
+      {
+        "address": "223.5.5.5",
+        "domains": [
+          "full:dns.alidns.com",
+          "full:cloudflare-dns.com"
+        ],
+        "skipFallback": true
+      },
+      "https://cloudflare-dns.com/dns-query"
+    ]
+  },
+  "inbounds": [
+    {
+      "protocol": "dokodemo-door",
+      "port": 5599,
+      "tag": "all-in",
+      "settings": {
+        "network": "tcp,udp",
+        "followRedirect": true
+      },
+      "streamSettings": {
+        "sockopt": {
+          "tproxy": "tproxy"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    {
+      "protocol": "vless",
+      "port": 4443,
+      "tag": "in-4443-tcp",
+      "settings": {
+        "decryption": "none",
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ],
+        "users": [
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "email": "king",
+            "flow": "xtls-rprx-vision"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "email": "jinli",
+            "flow": "xtls-rprx-vision"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "email": "yijia2",
+            "flow": "xtls-rprx-vision"
+          }
+        ]
+      },
+      "streamSettings": {
+        "security": "reality",
+        "realitySettings": {
+          "serverNames": [
+            "tms.dingtalk.com",
+            "page.dingtalk.com"
+          ],
+          "privateKey": "REDACTED_PRIVATEKEY",
+          "shortIds": [
+            "",
+            "63f35f7a75e8c271",
+            "aa",
+            "b2"
+          ],
+          "target": "tms.dingtalk.com:443"
+        },
+        "method": "raw"
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic",
+          "fakedns"
+        ]
+      }
+    },
+    {
+      "protocol": "vless",
+      "port": 6443,
+      "tag": "inbound-6443",
+      "settings": {
+        "decryption": "none",
+        "users": [
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "email": "shq",
+            "flow": "xtls-rprx-vision"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "email": "office",
+            "flow": "xtls-rprx-vision"
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000000",
+            "email": "shqdiannao",
+            "flow": "xtls-rprx-vision"
+          }
+        ]
+      },
+      "streamSettings": {
+        "security": "reality",
+        "realitySettings": {
+          "serverNames": [
+            "ceec.21tb.com",
+            "azgs.21tb.com"
+          ],
+          "privateKey": "REDACTED_PRIVATEKEY",
+          "shortIds": [
+            "",
+            "0123456789abcdef",
+            "9a",
+            "9a9a"
+          ],
+          "target": "ceec.21tb.com:443"
+        },
+        "method": "raw"
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic",
+          "fakedns"
+        ]
+      }
+    },
+    {
+      "protocol": "dokodemo-door",
+      "listen": "127.0.0.1",
+      "port": 53000,
+      "tag": "sys:dns-in",
+      "settings": {
+        "address": "1.1.1.1",
+        "port": 53,
+        "network": "tcp,udp",
+        "followRedirect": false
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "tag": "direct",
+      "settings": {
+        "domainStrategy": "UseIPv6v4",
+        "finalRules": [
+          {
+            "action": "allow",
+            "ip": [
+              "geoip:private"
+            ]
+          },
+          {
+            "action": "allow"
+          }
+        ]
+      }
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "block"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c003:92aa:0:4626:63da:8421]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 4443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "tms.05661.top",
+          "shortId": "00000000",
+          "spiderX": ""
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美RLEC1"
+    },
+    {
+      "protocol": "hysteria",
+      "tag": "备用hy",
+      "settings": {
+        "version": 2,
+        "address": "[2603:c024:c00f:2100:4:fc4e:57ed:5cc2]",
+        "port": 443
+      },
+      "streamSettings": {
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "ai.tepc.top",
+          "alpn": [
+            "h3",
+            "h2",
+            "http/1.1"
+          ]
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "auth": "REDACTED_AUTH"
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "REDACTED_PASSWORD"
+              }
+            }
+          ]
+        },
+        "method": "hysteria"
+      }
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c003:92aa:0:7be5:4097:a321]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 4443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "tms.05661.top",
+          "shortId": "00000000",
+          "spiderX": "/e53974bfcc190cd"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美RLEC2"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c003:92aa:0:9edd:d4c9:ac3e]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 4443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "tms.05661.top",
+          "shortId": "00000000",
+          "spiderX": "/e53974bfcc190cd"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "opanaiuse"
+    },
+    {
+      "protocol": "dns",
+      "tag": "sys:dns-out"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "170.9.50.177",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "1688.com",
+          "shortId": "00000000",
+          "spiderX": "/92413b050c3d561"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美1688"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:91a2:a804:82bc]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "feizhu.com",
+          "shortId": "00000000",
+          "spiderX": "/92413b050c3d561"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美xgcw"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:f8ff:fdf2:3745]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "taopiaopiao.com",
+          "shortId": "00000000",
+          "spiderX": "/80973986c6495d6"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美8lt2"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:9900:a94d:ab5a]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "alikunlun.com",
+          "shortId": "00000000",
+          "spiderX": "/c11600efbcd35ee"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美636e"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:34a:a744:e191]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "juhuasuan.com",
+          "shortId": "00000000",
+          "spiderX": "/505cd4a75b1ffa9"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美kwj2"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:28b3:bcb:f973]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "aliexpress.com",
+          "shortId": "00000000",
+          "spiderX": "/7397646d2d2bcb7"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美2dk"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:1fbb:4f84:d767]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "cainiao.com",
+          "shortId": "00000000",
+          "spiderX": "/bb1b95a09dfe9ca"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 美美3z78"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "192.9.228.0",
+        "encryption": "redacted-native-encryption",
+        "flow": "",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443
+      },
+      "streamSettings": {
+        "finalmask": {
+          "tcp": []
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": [
+            "h2"
+          ],
+          "echConfigList": "",
+          "fingerprint": "chrome",
+          "pinnedPeerCertSha256": "",
+          "serverName": "tms.05661.top",
+          "verifyPeerCertByName": ""
+        },
+        "xhttpSettings": {
+          "mode": "auto",
+          "path": "/9511b3a629a9",
+          "xPaddingBytes": "100-1000"
+        },
+        "method": "xhttp"
+      },
+      "tag": "Ⓜ️ 美TLSX"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c003:92aa:0:9edd:d4c9:ac3e]",
+        "encryption": "redacted-native-encryption",
+        "flow": "",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 8443
+      },
+      "streamSettings": {
+        "finalmask": {
+          "tcp": []
+        },
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "05661.top",
+          "shortId": "00000000",
+          "spiderX": ""
+        },
+        "security": "reality",
+        "xhttpSettings": {
+          "mode": "auto",
+          "path": "/9511b3a629a9",
+          "xPaddingBytes": "100-1000"
+        },
+        "method": "xhttp"
+      },
+      "tag": "Ⓜ️ 美RLYX"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:4511:9f00:0:60d7:51d0:3c08]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "date.tepc.top",
+          "shortId": "00000000",
+          "spiderX": "/8a6f98969abb028"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 狮美REC1"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:4511:9f00:0:8115:3757:b942]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "ss.20170418.xyz",
+          "shortId": "00000000",
+          "spiderX": "/8243b938bd0fe3b"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 狮美REC2"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "145.241.223.212",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "aliexpress.com",
+          "shortId": "00000000",
+          "spiderX": "/600b9afe1d344a8"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 英美RL4"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c020:c00c:456:1688:e440:ff74:8212]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "aliexpress.com",
+          "shortId": "00000000",
+          "spiderX": "/600b9afe1d344a8"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 英美RL6"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "145.241.211.50",
+        "encryption": "redacted-native-encryption",
+        "flow": "",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443
+      },
+      "streamSettings": {
+        "finalmask": {
+          "tcp": []
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": [
+            "h2"
+          ],
+          "echConfigList": "",
+          "fingerprint": "chrome",
+          "pinnedPeerCertSha256": "",
+          "serverName": "tms.tepc.top",
+          "verifyPeerCertByName": ""
+        },
+        "xhttpSettings": {
+          "mode": "auto",
+          "path": "/xiaozizhenhao",
+          "xPaddingBytes": "100-1000"
+        },
+        "method": "xhttp"
+      },
+      "tag": "Ⓜ️ 英国TX"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c020:c00c:456:1688:e294:8db5:6d01]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "aliyun.com",
+          "shortId": "00000000",
+          "spiderX": "/570b492d2f5bce8"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 英国RL"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:4511:9f00:0:76d4:8329:19d6]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "s.20170418.xyz",
+          "shortId": "00000000",
+          "spiderX": "/a16ff8bd7156586"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️ 狮城RLEC"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "138.2.84.127",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "date.tepc.top",
+          "shortId": "00000000",
+          "spiderX": "/9288c3de36cfe8e"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "tepcnet"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:4511:9f00:0:4d6d:5d7b:ebdf]",
+        "port": 8443,
+        "id": "00000000-0000-4000-8000-000000000000",
+        "flow": "",
+        "encryption": "redacted-native-encryption"
+      },
+      "tag": "Ⓜ️ 狮城TX",
+      "streamSettings": {
+        "method": "xhttp",
+        "security": "tls",
+        "xhttpSettings": {
+          "path": "/f34ff8bcb7e4",
+          "mode": "auto",
+          "xPaddingBytes": "100-1000"
+        },
+        "tlsSettings": {
+          "serverName": "date.tepc.top",
+          "alpn": [
+            "h2"
+          ],
+          "fingerprint": "chrome"
+        },
+        "finalmask": {
+          "tcp": []
+        }
+      }
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c020:c00c:456:1688:8dd8:27a2:5288]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "feizhu.com",
+          "shortId": "00000000",
+          "spiderX": "/b478b1f5e41c312"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️HQ中转"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "tms.05661.top",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 4443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "tms.05661.top",
+          "shortId": "00000000",
+          "spiderX": "/024ecbfd211bba2"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️XX中转"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "34.3.110.109",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "sg.tepc.top",
+          "shortId": "00000000",
+          "spiderX": ""
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "Ⓜ️俄勒3RL"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "tms.05661.top",
+        "encryption": "redacted-native-encryption",
+        "flow": "",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443
+      },
+      "streamSettings": {
+        "finalmask": {
+          "tcp": []
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": [
+            "h3",
+            "h2"
+          ],
+          "echConfigList": "",
+          "fingerprint": "chrome",
+          "pinnedPeerCertSha256": "",
+          "serverName": "tms.05661.top",
+          "verifyPeerCertByName": ""
+        },
+        "xhttpSettings": {
+          "mode": "auto",
+          "path": "/9511b3a629a9",
+          "xPaddingBytes": "100-1000"
+        },
+        "method": "xhttp"
+      },
+      "tag": "XX中转X"
+    },
+    {
+      "protocol": "vless",
+      "settings": {
+        "address": "[2603:c024:c00f:2100:2:e6a4:4993:ced7]",
+        "encryption": "redacted-native-encryption",
+        "flow": "xtls-rprx-vision-udp443",
+        "id": "00000000-0000-4000-8000-000000000000",
+        "port": 443,
+        "reverse": {
+          "sniffing": {},
+          "tag": "homexraylocal"
+        },
+        "testseed": [
+          900,
+          500,
+          900,
+          256
+        ]
+      },
+      "streamSettings": {
+        "realitySettings": {
+          "fingerprint": "chrome",
+          "mldsa65Verify": "REDACTED_MLDSA65VERIFY",
+          "publicKey": "REDACTED_PUBLICKEY",
+          "serverName": "tmall.com",
+          "shortId": "00000000",
+          "spiderX": "/db747c5c76f5624"
+        },
+        "security": "reality",
+        "method": "raw",
+        "rawSettings": {
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "tag": "homexray"
+    },
+    {
+      "protocol": "loopback",
+      "settings": {
+        "inboundTag": "_bl_sguklocal"
+      },
+      "tag": "_bl_sguklocal"
+    },
+    {
+      "protocol": "loopback",
+      "settings": {
+        "inboundTag": "_bl_uksgus"
+      },
+      "tag": "_bl_uksgus"
+    }
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "idx": 0,
+        "type": "field",
+        "name": "sys:metrics",
+        "inboundTag": [
+          "sys:metrics_in"
+        ],
+        "outboundTag": "sys:metrics_out"
+      },
+      {
+        "idx": -3,
+        "name": "sys:dns.intercept",
+        "type": "field",
+        "inboundTag": [
+          "sys:dns-in"
+        ],
+        "outboundTag": "sys:dns-out"
+      },
+      {
+        "idx": -2,
+        "name": "sys:dns.upstream",
+        "type": "field",
+        "inboundTag": [
+          "dns-module"
+        ],
+        "outboundTag": "Ⓜ️ 美RLEC1"
+      },
+      {
+        "idx": -1,
+        "name": "sys:dns.hijack",
+        "port": "53",
+        "type": "field",
+        "network": "tcp,udp",
+        "inboundTag": [
+          "all-in"
+        ],
+        "outboundTag": "sys:dns-out"
+      },
+      {
+        "idx": 3,
+        "name": "user.jinli.shqdiannao",
+        "type": "field",
+        "outboundTag": "Ⓜ️XX中转",
+        "user": [
+          "jinli",
+          "shqdiannao"
+        ]
+      },
+      {
+        "idx": 4,
+        "name": "user.shq",
+        "type": "field",
+        "outboundTag": "Ⓜ️HQ中转",
+        "user": [
+          "shq"
+        ]
+      },
+      {
+        "idx": 5,
+        "name": "dns.direct.ip",
+        "ip": [
+          "223.5.5.5",
+          "223.6.6.6",
+          "2400:3200::1",
+          "2400:3200:baba::1",
+          "119.29.29.29",
+          "1.12.12.12",
+          "120.53.53.53",
+          "2402:4e00::",
+          "2402:4e00:1::",
+          "180.76.76.76",
+          "2400:da00::6666",
+          "114.114.114.114",
+          "114.114.115.115",
+          "114.114.114.119",
+          "114.114.115.119",
+          "114.114.114.110",
+          "114.114.115.110",
+          "180.184.1.1",
+          "180.184.2.2",
+          "101.226.4.6",
+          "218.30.118.6",
+          "123.125.81.6",
+          "140.207.198.6",
+          "1.2.4.8",
+          "210.2.4.8",
+          "52.80.66.66",
+          "117.50.22.22",
+          "2400:7fc0:849e:200::4",
+          "2404:c2c0:85d8:901::4",
+          "117.50.10.10",
+          "52.80.52.52",
+          "2400:7fc0:849e:200::8",
+          "2404:c2c0:85d8:901::8",
+          "117.50.60.30",
+          "52.80.60.30",
+          "192.168.50.1"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 6,
+        "name": "local.direct.domains",
+        "domain": [
+          "tms.dingtalk.com",
+          "21tb.com",
+          "dingtalk.com",
+          "dingtalkapps.com",
+          "tepc.cn",
+          "steampowered.com",
+          "steamcontent.com",
+          "steamserver.net"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 7,
+        "name": "openlist",
+        "domain": [
+          "openlist.05661.top"
+        ],
+        "type": "field",
+        "outboundTag": "Ⓜ️ 美美1688"
+      },
+      {
+        "idx": 8,
+        "name": "05661",
+        "domain": [
+          "05661.top"
+        ],
+        "type": "field",
+        "outboundTag": "Ⓜ️ 美RLEC1"
+      },
+      {
+        "idx": 9,
+        "name": "20170418.fixed",
+        "domain": [
+          "20170418.xyz"
+        ],
+        "type": "field",
+        "outboundTag": "Ⓜ️ 狮城RLEC"
+      },
+      {
+        "idx": 10,
+        "name": "tepcnet.ip",
+        "ip": [
+          "172.16.0.0/16"
+        ],
+        "type": "field",
+        "outboundTag": "tepcnet"
+      },
+      {
+        "idx": 11,
+        "name": "tepcnet.domain",
+        "domain": [
+          "cs.tepc.top"
+        ],
+        "type": "field",
+        "outboundTag": "tepcnet"
+      },
+      {
+        "idx": 12,
+        "name": "rlec1.private.ip",
+        "ip": [
+          "172.31.255.0/24"
+        ],
+        "type": "field",
+        "outboundTag": "Ⓜ️ 美RLEC1"
+      },
+      {
+        "idx": 13,
+        "name": "tepc.top.uk",
+        "domain": [
+          "tepc.top"
+        ],
+        "type": "field",
+        "outboundTag": "Ⓜ️ 美RLEC1"
+      },
+      {
+        "idx": 14,
+        "name": "homexraylocal.direct",
+        "type": "field",
+        "inboundTag": [
+          "homexraylocal"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 15,
+        "name": "fallback.uksgus",
+        "type": "field",
+        "inboundTag": [
+          "_bl_uksgus"
+        ],
+        "balancerTag": "uksgus"
+      },
+      {
+        "idx": 16,
+        "name": "fallback.sguklocal",
+        "type": "field",
+        "inboundTag": [
+          "_bl_sguklocal"
+        ],
+        "balancerTag": "sguklocal"
+      },
+      {
+        "idx": 17,
+        "name": "ads.block",
+        "domain": [
+          "geosite:category-ads-all"
+        ],
+        "type": "field",
+        "outboundTag": "block"
+      },
+      {
+        "idx": 18,
+        "name": "ai.openai",
+        "domain": [
+          "keyword:openai",
+          "keyword:openaiapi",
+          "keyword:openaicom",
+          "keyword:openaicom-api",
+          "regexp:^chatgpt-async-webps-prod-\\S+-\\d+\\.webpubsub\\.azure\\.com$",
+          "domain:ai.com",
+          "domain:auth0.com",
+          "domain:challenges.cloudflare.com",
+          "domain:chat.com",
+          "domain:chatgpt.com",
+          "domain:chatgpt.livekit.cloud",
+          "domain:client-api.arkoselabs.com",
+          "domain:events.statsigapi.net",
+          "domain:featuregates.org",
+          "domain:identrust.com",
+          "domain:intercom.io",
+          "domain:intercomcdn.com",
+          "domain:livekit.cloud",
+          "domain:host.livekit.cloud",
+          "domain:turn.livekit.cloud",
+          "domain:oaistatic.com",
+          "domain:oaiusercontent.com",
+          "domain:openai.com",
+          "domain:openai.com.cdn.cloudflare.net",
+          "domain:openaiapi-site.azureedge.net",
+          "domain:openaicom.imgix.net",
+          "domain:sentry.io",
+          "domain:stripe.com",
+          "domain:sora.com",
+          "domain:webpubsub.azure.com",
+          "full:api-iam.intercom.io",
+          "full:api.statsig.com",
+          "full:browser-intake-datadoghq.com",
+          "full:cdn.usefathom.com",
+          "full:chat.openai.com.cdn.cloudflare.net",
+          "full:cp4.cloudflare.com",
+          "full:o33249.ingest.sentry.io",
+          "full:openai-api.arkoselabs.com",
+          "full:openaicom-api-bdcpf8c6d2e9atf6.z01.azurefd.net",
+          "full:openaicomproductionae4b.blob.core.windows.net",
+          "full:production-openaicom-storage.azureedge.net",
+          "full:static.cloudflareinsights.com"
+        ],
+        "type": "field",
+        "outboundTag": "opanaiuse"
+      },
+      {
+        "idx": 19,
+        "name": "ai.claude",
+        "domain": [
+          "keyword:anthropic",
+          "keyword:claude",
+          "domain:anthropic.com",
+          "domain:clau.de",
+          "domain:claude.ai",
+          "domain:claude.com",
+          "domain:claudemcpclient.com",
+          "domain:claudeusercontent.com",
+          "full:servd-anthropic-website.b-cdn.net"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 20,
+        "name": "ai.gemini",
+        "domain": [
+          "keyword:colab",
+          "keyword:developerprofiles",
+          "keyword:gemini",
+          "keyword:generativelanguage",
+          "keyword:labs.google",
+          "keyword:notebooklm.google",
+          "domain:ai.studio",
+          "domain:aicode.googleapis.com",
+          "domain:aida.googleapis.com",
+          "domain:aisandbox-pa.googleapis.com",
+          "domain:aistudio.google.com",
+          "domain:antigravity-unleash.goog",
+          "domain:antigravity.google",
+          "domain:bard.google.com",
+          "domain:deepmind.com",
+          "domain:deepmind.google",
+          "domain:geller-pa.googleapis.com",
+          "domain:gemini.google",
+          "domain:gemini.google.com",
+          "domain:geminiusercontent.com",
+          "domain:generativeai.google",
+          "domain:generativelanguage.googleapis.com",
+          "domain:jules.google",
+          "domain:jules.google.com",
+          "domain:labs.google",
+          "domain:labs.google.com",
+          "domain:makersuite.google.com",
+          "domain:notebooklm.google",
+          "domain:notebooklm.google.com",
+          "domain:opal.google",
+          "domain:opal.google.com",
+          "domain:proactivebackend-pa.googleapis.com",
+          "domain:robinfrontend-pa.googleapis.com",
+          "domain:stitch.withgoogle.com",
+          "domain:vertexai.googleapis.com",
+          "full:ai.google.dev",
+          "full:alkalicore-pa.clients6.google.com",
+          "full:alkalimakersuite-pa.clients6.google.com",
+          "full:antigravity-pa.googleapis.com",
+          "full:antigravity.googleapis.com",
+          "full:cloudaicompanion.googleapis.com",
+          "full:cloudcode-pa.googleapis.com",
+          "full:daily-cloudcode-pa.googleapis.com",
+          "full:notebooklm-pa.googleapis.com",
+          "full:notebooklm.googleapis.com",
+          "full:ogads-pa.googleapis.com",
+          "full:waa-pa.clients6.google.com",
+          "full:webchannel-alkalimakersuite-pa.clients6.google.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 21,
+        "name": "ai.copilot",
+        "domain": [
+          "domain:ai.azure.com",
+          "domain:api.microsoftapp.net",
+          "domain:bing-shopping.microsoft-falcon.io",
+          "domain:copilot.cloud.microsoft",
+          "domain:copilot.microsoft.com",
+          "domain:edgeservices.bing.com",
+          "domain:githubcopilot.com",
+          "domain:signalr.net",
+          "full:api.msn.com",
+          "full:assets.msn.com",
+          "full:copilot-proxy.githubusercontent.com",
+          "full:copilot-workspace.githubnext.com",
+          "full:copilotprodattachments.blob.core.windows.net",
+          "full:gateway.bingviz.microsoft.net",
+          "full:gateway.bingviz.microsoftapp.net",
+          "full:location.microsoft.com",
+          "full:odc.officeapps.live.com",
+          "full:r.bing.com",
+          "full:self.events.data.microsoft.com",
+          "full:services.bingapis.com",
+          "full:sydney.bing.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 22,
+        "name": "ai.perplexity",
+        "domain": [
+          "domain:perplexity.ai",
+          "domain:perplexity.com",
+          "domain:pplx.ai",
+          "full:ppl-ai-file-upload.s3.amazonaws.com",
+          "full:pplx-res.cloudinary.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 23,
+        "name": "ai.other",
+        "domain": [
+          "domain:agentclientprotocol.com",
+          "domain:anythingllm.com",
+          "domain:cerebras.ai",
+          "domain:chutes.ai",
+          "domain:cici.com",
+          "domain:ciciai.com",
+          "domain:ciciaicdn.com",
+          "domain:circumlunar.space",
+          "domain:clawhub.ai",
+          "domain:clipdrop.co",
+          "domain:codeium.com",
+          "domain:codeiumdata.com",
+          "domain:coderabbit.ai",
+          "domain:coderabbit.gallery.vsassets.io",
+          "domain:cohere.ai",
+          "domain:cohere.com",
+          "domain:comfy.org",
+          "domain:comfyci.org",
+          "domain:comfyregistry.org",
+          "domain:conman.org",
+          "domain:coze.com",
+          "domain:crewai.com",
+          "domain:crixet.com",
+          "domain:cursor-cdn.com",
+          "domain:cursor.com",
+          "domain:cursor.sh",
+          "domain:cursorapi.com",
+          "domain:deepl.com",
+          "domain:devin.ai",
+          "domain:diabrowser.com",
+          "domain:diabrowser.engineering",
+          "domain:dify.ai",
+          "domain:difyai.com",
+          "domain:dola.com",
+          "domain:duck.ai",
+          "domain:elevenlabs.com",
+          "domain:elevenlabs.io",
+          "domain:envato-static.com",
+          "domain:envato.com",
+          "domain:envatousercontent.com",
+          "domain:gateway.ai.cloudflare.com",
+          "domain:genspark.ai",
+          "domain:grazie.ai",
+          "domain:grazie.aws.intellij.net",
+          "domain:grok.com",
+          "domain:grok.x.com",
+          "domain:groq.com",
+          "domain:h2o.ai",
+          "domain:hf.co",
+          "domain:hf.space",
+          "domain:huggingface.co",
+          "domain:imagine.meta.com",
+          "domain:jasper.ai",
+          "domain:jetbrains.ai",
+          "domain:kiro.dev",
+          "domain:langchain.com",
+          "domain:launchdarkly.com",
+          "domain:liveperson.net",
+          "domain:lmstudio.ai",
+          "domain:lovart.ai",
+          "domain:lpsnmedia.net",
+          "domain:manus.im",
+          "domain:manuscdn.com",
+          "domain:marscode.com",
+          "domain:meta.ai",
+          "domain:minimax.io",
+          "domain:mistral.ai",
+          "domain:mozz.us",
+          "domain:observeit.net",
+          "domain:ollama.com",
+          "domain:openart.ai",
+          "domain:openclaw.ai",
+          "domain:openrouter.ai",
+          "domain:openspec.dev",
+          "domain:oystermercury.top",
+          "domain:plannotator.ai",
+          "domain:poe.com",
+          "domain:poecdn.net",
+          "domain:segment.io",
+          "domain:spicywriter.com",
+          "domain:themeforest.net",
+          "domain:trae.ai",
+          "domain:vulpes.one",
+          "domain:windsurf.build",
+          "domain:windsurf.com",
+          "domain:x.ai",
+          "domain:youmind.ai",
+          "domain:youmind.com",
+          "domain:youmind.site",
+          "full:api.jetbrains.ai",
+          "full:api.together.xyz",
+          "full:apple-relay.apple.com",
+          "full:apple-relay.cloudflare.com",
+          "full:apple-relay.fastly-edge.com",
+          "full:guzzoni.apple.com",
+          "full:in.appcenter.ms",
+          "full:trae-api-sg.mchost.guru"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 24,
+        "name": "apple.domain.direct",
+        "domain": [
+          "full:apple.comscoreresearch.com",
+          "full:gspe1-ssl.ls.apple.com",
+          "full:np-edge.itunes.apple.com",
+          "full:play-edge.itunes.apple.com",
+          "domain:aaplimg.com",
+          "domain:akadns.net",
+          "domain:apple-cloudkit.com",
+          "domain:apple-dns.net",
+          "domain:apple-mapkit.com",
+          "domain:apple.co",
+          "domain:apple.com",
+          "domain:apple.com.cn",
+          "domain:apple.news",
+          "domain:appstore.com",
+          "domain:cdn-apple.com",
+          "domain:crashlytics.com",
+          "domain:icloud-content.com",
+          "domain:icloud.com",
+          "domain:icloud.com.cn",
+          "domain:itunes.com",
+          "domain:me.com",
+          "domain:mzstatic.com",
+          "domain:tv.apple.com"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 25,
+        "name": "apple.ip.direct",
+        "ip": [
+          "17.0.0.0/8",
+          "63.92.224.0/19",
+          "65.199.22.0/23",
+          "139.178.128.0/18",
+          "144.178.0.0/19",
+          "144.178.36.0/22",
+          "144.178.48.0/20",
+          "192.35.50.0/24",
+          "198.183.17.0/24",
+          "205.180.175.0/24"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 26,
+        "name": "microsoft.onedrive.direct",
+        "domain": [
+          "keyword:1drv",
+          "keyword:microsoft",
+          "keyword:onedrive",
+          "keyword:skydrive",
+          "domain:aadrm.com",
+          "domain:acompli.com",
+          "domain:acompli.net",
+          "domain:aka.ms",
+          "domain:akadns.net",
+          "domain:aspnetcdn.com",
+          "domain:assets-yammer.com",
+          "domain:azure.com",
+          "domain:azure.net",
+          "domain:azureedge.net",
+          "domain:azureiotcentral.com",
+          "domain:azurerms.com",
+          "domain:bing.com",
+          "domain:bing.net",
+          "domain:bingapis.com",
+          "domain:cloudapp.net",
+          "domain:cloudappsecurity.com",
+          "domain:edgesuite.net",
+          "domain:gfx.ms",
+          "domain:hotmail.com",
+          "domain:live.com",
+          "domain:live.net",
+          "domain:lync.com",
+          "domain:msappproxy.net",
+          "domain:msauth.net",
+          "domain:msauthimages.net",
+          "domain:msecnd.net",
+          "domain:msedge.net",
+          "domain:msft.net",
+          "domain:msftauth.net",
+          "domain:msftauthimages.net",
+          "domain:msftidentity.com",
+          "domain:msidentity.com",
+          "domain:msn.cn",
+          "domain:msn.com",
+          "domain:msocdn.com",
+          "domain:msocsp.com",
+          "domain:mstea.ms",
+          "domain:o365weve.com",
+          "domain:oaspapps.com",
+          "domain:office.com",
+          "domain:office.net",
+          "domain:office365.com",
+          "domain:officeppe.net",
+          "domain:omniroot.com",
+          "domain:onedrive.com",
+          "domain:onenote.com",
+          "domain:onenote.net",
+          "domain:onestore.ms",
+          "domain:outlook.com",
+          "domain:outlookmobile.com",
+          "domain:phonefactor.net",
+          "domain:public-trust.com",
+          "domain:sfbassets.com",
+          "domain:sfx.ms",
+          "domain:sharepoint.com",
+          "domain:sharepointonline.com",
+          "domain:skype.com",
+          "domain:skypeassets.com",
+          "domain:skypeforbusiness.com",
+          "domain:staffhub.ms",
+          "domain:svc.ms",
+          "domain:sway-cdn.com",
+          "domain:sway-extensions.com",
+          "domain:sway.com",
+          "domain:trafficmanager.net",
+          "domain:uservoice.com",
+          "domain:virtualearth.net",
+          "domain:visualstudio.com",
+          "domain:windows-ppe.net",
+          "domain:windows.com",
+          "domain:windows.net",
+          "domain:windowsazure.com",
+          "domain:windowsupdate.com",
+          "domain:wunderlist.com",
+          "domain:yammer.com",
+          "domain:yammerusercontent.com",
+          "domain:livefilestore.com",
+          "domain:microsoftpersonalcontent.com",
+          "domain:oneclient.sfx.ms",
+          "domain:onedrive.live.com",
+          "domain:photos.live.com",
+          "domain:skydrive.wns.windows.com",
+          "domain:spoprod-a.akamaihd.net",
+          "domain:storage.live.com",
+          "domain:storage.msn.com"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 27,
+        "name": "youtube",
+        "domain": [
+          "keyword:youtube",
+          "full:youtubei.googleapis.com",
+          "full:yt3.ggpht.com",
+          "domain:googlevideo.com",
+          "domain:gvt2.com",
+          "domain:withyoutube.com",
+          "domain:youtu.be",
+          "domain:youtube-nocookie.com",
+          "domain:youtube.com",
+          "domain:youtubeeducation.com",
+          "domain:youtubegaming.com",
+          "domain:youtubekids.com",
+          "domain:yt.be",
+          "domain:ytimg.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 28,
+        "name": "telegram.domain",
+        "domain": [
+          "keyword:telegram",
+          "domain:t.me",
+          "domain:tdesktop.com",
+          "domain:telegra.ph",
+          "domain:telegram.me",
+          "domain:telegram.org",
+          "domain:telesco.pe"
+        ],
+        "type": "field",
+        "balancerTag": "uksgus"
+      },
+      {
+        "idx": 29,
+        "name": "tiktok.bytedance",
+        "domain": [
+          "keyword:musical.ly",
+          "keyword:tiktok",
+          "full:lf16-effectcdn.byteeffecttos-g.com",
+          "full:lf16-pkgcdn.pitaya-clientai.com",
+          "full:p16-tiktokcdn-com.akamaized.net",
+          "full:roovza-launches.appsflyersdk.com",
+          "full:roovza.inapps.appsflyersdk.com",
+          "full:roovza.launches.appsflyersdk.com",
+          "full:roovza.skadsdk.appsflyersdk.com",
+          "domain:bytedapm.com",
+          "domain:bytegecko-i18n.com",
+          "domain:byteintlapi.com",
+          "domain:byteoversea.com",
+          "domain:capcut.com",
+          "domain:ibytedtos.com",
+          "domain:ibyteimg.com",
+          "domain:ipstatp.com",
+          "domain:isnssdk.com",
+          "domain:muscdn.com",
+          "domain:musical.ly",
+          "domain:sgpstatp.com",
+          "domain:snssdk.com",
+          "domain:tik-tokapi.com",
+          "domain:tiktok-minis.com",
+          "domain:tiktok-row.net",
+          "domain:tiktok.com",
+          "domain:tiktokcdn-eu.com",
+          "domain:tiktokcdn-us.com",
+          "domain:tiktokcdn-us.com.edgesuite.net",
+          "domain:tiktokcdn.com",
+          "domain:tiktokcdn.com.akamaized.net",
+          "domain:tiktokcdn.com.edgesuite.net",
+          "domain:tiktokd.net",
+          "domain:tiktokd.org",
+          "domain:tiktokeu-cdn.com",
+          "domain:tiktokglobalshopv.com",
+          "domain:tiktokminis.us",
+          "domain:tiktokmusic.app",
+          "domain:tiktokrow-cdn.com",
+          "domain:tiktokv.com",
+          "domain:tiktokv.com.edgekey.net",
+          "domain:tiktokv.com.edgesuite.net",
+          "domain:tiktokv.eu",
+          "domain:tiktokv.us",
+          "domain:tiktokw.eu",
+          "domain:tiktokw.us",
+          "domain:ttcdn-us.com",
+          "domain:ttlivecdn.com",
+          "domain:ttoverseaus.net",
+          "domain:ttwebview.com",
+          "domain:ttwstatic.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 30,
+        "name": "google.fcm.domain",
+        "domain": [
+          "full:alt1-mtalk.google.com",
+          "full:alt2-mtalk.google.com",
+          "full:alt3-mtalk.google.com",
+          "full:alt4-mtalk.google.com",
+          "full:alt5-mtalk.google.com",
+          "full:alt6-mtalk.google.com",
+          "full:alt7-mtalk.google.com",
+          "full:alt8-mtalk.google.com",
+          "full:mtalk.google.com",
+          "full:alt1.mobile-gtalk.l.google.com",
+          "full:alt2.mobile-gtalk.l.google.com",
+          "full:alt3.mobile-gtalk.l.google.com",
+          "full:alt4.mobile-gtalk.l.google.com",
+          "full:alt5.mobile-gtalk.l.google.com",
+          "full:alt6.mobile-gtalk.l.google.com",
+          "full:alt7.mobile-gtalk.l.google.com",
+          "full:alt8.mobile-gtalk.l.google.com",
+          "full:mobile-gtalk.l.google.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 31,
+        "name": "google.cn.domain",
+        "domain": [
+          "domain:265.com",
+          "domain:2mdn.net",
+          "domain:app-measurement.com",
+          "domain:cache.pack.google.com",
+          "domain:clickserve.dartsearch.net",
+          "domain:crl.pki.goog",
+          "domain:dl.google.com",
+          "domain:dl.l.google.com",
+          "domain:googletagmanager.com",
+          "domain:googletagservices.com",
+          "domain:gtm.oasisfeng.com",
+          "domain:ocsp.pki.goog",
+          "domain:recaptcha.net",
+          "domain:safebrowsing-cache.google.com",
+          "domain:settings.crashlytics.com",
+          "domain:ssl-google-analytics.l.google.com",
+          "domain:toolbarqueries.google.com",
+          "domain:tools.google.com",
+          "domain:tools.l.google.com",
+          "domain:www-googletagmanager.l.google.com",
+          "domain:ci.android.com",
+          "domain:g0.gstatic.com",
+          "domain:g1.gstatic.com",
+          "domain:g2.gstatic.com",
+          "domain:checkin.gstatic.com",
+          "domain:i.pki.goog",
+          "domain:c.pki.goog",
+          "domain:o.pki.goog",
+          "domain:clientservices.googleapis.com",
+          "domain:imasdk.googleapis.com",
+          "domain:fonts.googleapis.com",
+          "domain:update.googleapis.com",
+          "domain:safebrowsing.googleapis.com",
+          "domain:connectivitycheck.gstatic.com",
+          "domain:csi.gstatic.com",
+          "domain:fonts.gstatic.com",
+          "domain:ssl.gstatic.com",
+          "domain:www.gstatic.com",
+          "domain:redirector.gvt1.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 32,
+        "name": "google.general.domain",
+        "domain": [
+          "keyword:gmail",
+          "keyword:google",
+          "domain:1e100.net",
+          "domain:2mdn.net",
+          "domain:app-measurement.net",
+          "domain:c.gle",
+          "domain:g.co",
+          "domain:ggpht.com",
+          "domain:goo.gl",
+          "domain:googleapis.cn",
+          "domain:googleapis.com",
+          "domain:gstatic.cn",
+          "domain:gstatic.com",
+          "domain:gvt0.com",
+          "domain:gvt1.com",
+          "domain:gvt3.com",
+          "domain:xn--ngstr-lra8j.com"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 33,
+        "name": "telegram.ip",
+        "ip": [
+          "5.28.192.0/18",
+          "91.105.192.0/23",
+          "91.108.0.0/16",
+          "95.161.64.0/20",
+          "109.239.140.0/24",
+          "149.154.160.0/20",
+          "185.76.151.0/24",
+          "2001:67c:4e8::/48",
+          "2001:b28:f23c::/48",
+          "2001:b28:f23d::/48",
+          "2001:b28:f23f::/48",
+          "2a0a:f280:203::/48"
+        ],
+        "type": "field",
+        "balancerTag": "uksgus"
+      },
+      {
+        "idx": 34,
+        "name": "google.fcm.ip",
+        "ip": [
+          "64.233.177.188/32",
+          "64.233.186.188/32",
+          "64.233.187.188/32",
+          "64.233.188.188/32",
+          "64.233.189.188/32",
+          "74.125.23.188/32",
+          "74.125.24.188/32",
+          "74.125.28.188/32",
+          "74.125.127.188/32",
+          "74.125.137.188/32",
+          "74.125.203.188/32",
+          "74.125.204.188/32",
+          "74.125.206.188/32",
+          "108.177.125.188/32",
+          "142.250.4.188/32",
+          "142.250.10.188/32",
+          "142.250.31.188/32",
+          "142.250.96.188/32",
+          "172.217.194.188/32",
+          "172.217.218.188/32",
+          "172.217.219.188/32",
+          "172.253.63.188/32",
+          "172.253.122.188/32",
+          "173.194.175.188/32",
+          "173.194.218.188/32",
+          "209.85.233.188/32"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 35,
+        "name": "google.cnproxy.ip",
+        "ip": [
+          "120.232.181.162/32",
+          "120.241.147.226/32",
+          "120.253.253.226/32",
+          "120.253.255.162/32",
+          "120.253.255.34/32",
+          "120.253.255.98/32",
+          "180.163.150.162/32",
+          "180.163.150.34/32",
+          "180.163.151.162/32",
+          "180.163.151.34/32",
+          "203.208.39.0/24",
+          "203.208.40.0/24",
+          "203.208.41.0/24",
+          "203.208.43.0/24",
+          "203.208.50.0/24",
+          "220.181.174.162/32",
+          "220.181.174.226/32",
+          "220.181.174.34/32"
+        ],
+        "type": "field",
+        "outboundTag": "Ⓜ️ 美RLEC1"
+      },
+      {
+        "idx": 36,
+        "name": "google.general.ip",
+        "ip": [
+          "8.8.4.0/24",
+          "8.8.8.0/24",
+          "8.34.208.0/20",
+          "8.35.192.0/20",
+          "23.236.48.0/20",
+          "23.251.128.0/19",
+          "34.64.0.0/10",
+          "34.128.0.0/10",
+          "35.184.0.0/13",
+          "35.192.0.0/14",
+          "35.196.0.0/15",
+          "35.198.0.0/16",
+          "35.199.0.0/17",
+          "35.199.128.0/18",
+          "35.200.0.0/13",
+          "35.208.0.0/12",
+          "35.224.0.0/12",
+          "35.240.0.0/13",
+          "64.15.112.0/20",
+          "64.233.160.0/19",
+          "66.102.0.0/20",
+          "66.249.64.0/19",
+          "70.32.128.0/19",
+          "72.14.192.0/18",
+          "74.114.24.0/21",
+          "74.125.0.0/16",
+          "104.154.0.0/15",
+          "104.196.0.0/14",
+          "104.237.160.0/19",
+          "107.167.160.0/19",
+          "107.178.192.0/18",
+          "108.59.80.0/20",
+          "108.170.192.0/18",
+          "108.177.0.0/17",
+          "130.211.0.0/16",
+          "136.112.0.0/12",
+          "142.250.0.0/15",
+          "146.148.0.0/17",
+          "162.216.148.0/22",
+          "162.222.176.0/21",
+          "172.110.32.0/21",
+          "172.217.0.0/16",
+          "172.253.0.0/16",
+          "173.194.0.0/16",
+          "173.255.112.0/20",
+          "192.158.28.0/22",
+          "192.178.0.0/15",
+          "193.186.4.0/24",
+          "199.36.154.0/23",
+          "199.36.156.0/24",
+          "199.192.112.0/22",
+          "199.223.232.0/21",
+          "207.223.160.0/20",
+          "208.65.152.0/22",
+          "208.68.108.0/22",
+          "208.81.188.0/22",
+          "208.117.224.0/19",
+          "209.85.128.0/17",
+          "216.58.192.0/19",
+          "216.73.80.0/20",
+          "216.239.32.0/19",
+          "2001:4860::/32",
+          "2404:6800::/32",
+          "2404:f340::/32",
+          "2600:1900::/28",
+          "2606:73c0::/32",
+          "2607:f8b0::/32",
+          "2620:11a:a000::/40",
+          "2620:120:e000::/40",
+          "2800:3f0::/32",
+          "2a00:1450::/32",
+          "2c0f:fb50::/32"
+        ],
+        "type": "field",
+        "balancerTag": "usmix"
+      },
+      {
+        "idx": 37,
+        "name": "private.ip",
+        "ip": [
+          "geoip:private"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 38,
+        "name": "private.domain",
+        "domain": [
+          "geosite:private"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 39,
+        "name": "dns.direct.domain",
+        "domain": [
+          "domain:alidns.com",
+          "domain:doh.pub",
+          "domain:dot.pub",
+          "domain:360.cn",
+          "domain:onedns.net"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 40,
+        "name": "cn.ip",
+        "ip": [
+          "geoip:cn"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 41,
+        "name": "cn.domain",
+        "domain": [
+          "geosite:cn"
+        ],
+        "type": "field",
+        "outboundTag": "direct"
+      },
+      {
+        "idx": 42,
+        "name": "default.usmix",
+        "type": "field",
+        "inboundTag": [
+          "all-in",
+          "in-4443-tcp",
+          "inbound-6443"
+        ],
+        "balancerTag": "usmix"
+      }
+    ],
+    "balancers": [
+      {
+        "tag": "usmix",
+        "selector": [
+          "Ⓜ️ 美RLEC1",
+          "Ⓜ️ 美RLEC2",
+          "Ⓜ️ 美美1688",
+          "Ⓜ️ 美美xgcw",
+          "Ⓜ️ 美美8lt2",
+          "Ⓜ️ 美美636e",
+          "Ⓜ️ 美美kwj2",
+          "Ⓜ️ 美美2dk",
+          "Ⓜ️ 美美3z78",
+          "Ⓜ️ 美RLYX"
+        ],
+        "fallbackTag": "_bl_uksgus"
+      },
+      {
+        "tag": "uksgus",
+        "selector": [
+          "Ⓜ️ 狮美REC1",
+          "Ⓜ️ 狮美REC2",
+          "Ⓜ️ 英美RL4",
+          "Ⓜ️ 英美RL6"
+        ],
+        "fallbackTag": "_bl_sguklocal",
+        "strategy": {
+          "type": "leastPing"
+        }
+      },
+      {
+        "tag": "sguklocal",
+        "selector": [
+          "Ⓜ️ 英国TX",
+          "Ⓜ️ 英国RL",
+          "Ⓜ️ 狮城RLEC"
+        ],
+        "fallbackTag": "备用hy",
+        "strategy": {
+          "type": "leastPing"
+        }
+      }
+    ],
+    "policies": []
+  },
+  "api": {
+    "services": [
+      "HandlerService",
+      "LoggerService",
+      "StatsService",
+      "RoutingService"
+    ],
+    "tag": "api",
+    "listen": "127.0.0.1:10085"
+  },
+  "burstObservatory": {
+    "pingConfig": {
+      "connectivity": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "destination": "https://www.google.com/generate_204",
+      "httpMethod": "HEAD",
+      "interval": "30s",
+      "sampling": 2,
+      "timeout": "5s"
+    },
+    "subjectSelector": [
+      "Ⓜ️ 美美1688",
+      "Ⓜ️ 美美xgcw",
+      "Ⓜ️ 美美8lt2",
+      "Ⓜ️ 美美636e",
+      "Ⓜ️ 美美kwj2",
+      "Ⓜ️ 美美2dk",
+      "Ⓜ️ 美美3z78",
+      "Ⓜ️ 美RLEC1",
+      "Ⓜ️ 美RLEC2",
+      "Ⓜ️ 美RLYX",
+      "Ⓜ️ 狮美REC1",
+      "Ⓜ️ 狮美REC2",
+      "Ⓜ️ 英美RL4",
+      "Ⓜ️ 英美RL6",
+      "Ⓜ️ 英国TX",
+      "Ⓜ️ 英国RL",
+      "Ⓜ️ 狮城RLEC"
+    ]
+  },
+  "metrics": {
+    "listen": "127.0.0.1:11111",
+    "tag": "metrics_out"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "statsUserDownlink": true,
+        "statsUserOnline": true,
+        "statsUserUplink": true
+      }
+    },
+    "system": {
+      "statsInboundDownlink": true,
+      "statsInboundUplink": true,
+      "statsOutboundDownlink": true,
+      "statsOutboundUplink": true
+    }
+  },
+  "stats": {}
+}

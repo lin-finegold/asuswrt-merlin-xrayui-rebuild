@@ -4,9 +4,11 @@ export interface ApplyCompatibilityResult {
 }
 
 /**
- * Returns paths whose native shape is not yet represented by the current UI.
- * Applying a configuration with any such path is unsafe because normalization
- * may rewrite or drop native fields before the router receives it.
+ * Temporary fail-closed boundary for the legacy UI serializer.
+ *
+ * Native-preserving Apply will replace this guard after the adapters and
+ * baseline/patch pipeline are complete. Until then, an unknown native shape
+ * must block Apply rather than risk rewriting or dropping fields.
  */
 export function validateConfigurationForApply(config: any): ApplyCompatibilityResult {
   const issues: string[] = [];
